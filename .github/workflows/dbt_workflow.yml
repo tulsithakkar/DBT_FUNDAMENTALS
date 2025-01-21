@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: 3.9
 
-      # Set Environment Variables
+      # Set Environment Variables (only needed if you're passing the variable to other steps)
       - name: Set Environment Variables
         env:
           DBT_PROFILES_DIR: ${{ github.workspace }}/.github/dbt_profiles
@@ -38,11 +38,10 @@ jobs:
           pip install --upgrade pip
           pip install dbt-core dbt-snowflake
 
-      # Run DBT commands
+      # Run DBT commands, explicitly passing the --profiles-dir option
       - name: Run DBT Models
         run: |
           source dbt-env/bin/activate
-          echo "Running DBT commands"
-          dbt deps
-          dbt run
-          dbt test
+          dbt deps --profiles-dir ${{ github.workspace }}/.github/dbt_profiles
+          dbt run --profiles-dir ${{ github.workspace }}/.github/dbt_profiles
+          dbt test --profiles-dir ${{ github.workspace }}/.github/dbt_profiles
