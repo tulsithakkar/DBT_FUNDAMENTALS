@@ -34,12 +34,12 @@ jobs:
     # Set environment variables (if needed)
     - name: Set Environment Variables
       env:
-        DBT_PROFILES_DIR: ${{ secrets.DBT_PROFILES_DIR }}
+        DBT_PROFILES_DIR: ${{ github.workspace }}/.github/dbt_profiles  # Path to your dbt profile directory
 
     # Debug: Check if the environment variable is set
     - name: Echo DBT_PROFILES_DIR
       run: |
-        echo "DBT_PROFILES_DIR is set to: ${{ secrets.DBT_PROFILES_DIR }}"
+        echo "DBT_PROFILES_DIR is set to: $DBT_PROFILES_DIR"
 
     # Run DBT commands
     - name: Run DBT Models
@@ -49,9 +49,4 @@ jobs:
         dbt run   # Run models
         dbt test  # Test models
 
-    # Upload logs as artifacts (optional)
-    - name: Upload Logs
-      uses: actions/upload-artifact@v3
-      with:
-        name: dbt-logs
-        path: logs/  # Ensure 'logs/' directory exists in your project
+
