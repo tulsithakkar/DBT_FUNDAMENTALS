@@ -3,7 +3,7 @@ name: DBT Workflow
 on:
   push:
     branches:
-      - main  # Adjust this to your default branch if different
+      - main  # Adjust this to your default branch
   pull_request:
     branches:
       - main
@@ -21,27 +21,32 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.9  # Match the Python version used in your local dbt project
+        python-version: 3.9  # Match the Python version you use locally
 
-    # Install DBT
+    # Install DBT and adapter
     - name: Install DBT
       run: |
         python -m venv dbt-env
         source dbt-env/bin/activate
         pip install --upgrade pip
-        pip install dbt-core dbt-snowflake  # Adjust dbt adapter based on your project
+        pip install dbt-core dbt-snowflake  # Use your adapter (e.g., dbt-snowflake)
+
+    # Set environment variables (if needed)
+    - name: Set Environment Variables
+      env:
+        DBT_PROFILES_DIR: ${{ secrets.DBT_PROFILES_DIR }}
 
     # Run DBT commands
     - name: Run DBT Models
       run: |
         source dbt-env/bin/activate
         dbt deps  # Install dependencies
-        dbt run  # Run models
-        dbt test  # Run tests
+        dbt run   # Run models
+        dbt test  # Test models
 
     # Upload logs as artifacts (optional)
     - name: Upload Logs
       uses: actions/upload-artifact@v3
       with:
         name: dbt-logs
-        path: logs/  # Specify the path to DBT log files if needed
+        path: logs/  # Ensure 'logs/' directory exists in your project
