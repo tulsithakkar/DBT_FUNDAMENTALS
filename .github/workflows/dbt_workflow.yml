@@ -1,3 +1,9 @@
+# runs-on: This key tells GitHub which operating system environment to use for the workflow.
+# ubuntu-latest: This refers to the latest stable version of Ubuntu Linux that GitHub provides as a virtual machine (VM) for running your workflow.
+
+#without cache
+
+
 # name: DBT Workflow
 
 # on:
@@ -13,7 +19,7 @@
 #     runs-on: ubuntu-latest
 
 #     steps:
-#       # Checkout the repository
+#       # Checkout the repository  This action will clone your GitHub repository onto the runner, so the DBT commands can run against the latest code in your repository.
 #       - name: Checkout Code
 #         uses: actions/checkout@v3
 
@@ -64,7 +70,8 @@ jobs:
         with:
           python-version: 3.9
 
-      # Cache pip dependencies
+      # Cache pip dependencies(Optional)
+      # This step is optional but highly recommended to speed up your workflow. Caching will store your pip dependencies so they don't have to be reinstalled every time.
       - name: Cache pip dependencies
         uses: actions/cache@v3
         with:
