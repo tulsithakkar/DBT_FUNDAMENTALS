@@ -1,3 +1,44 @@
+# name: DBT Workflow
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+
+# jobs:
+#   dbt-run:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       # Checkout the repository
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
+
+#       # Set up Python
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: 3.9
+
+#       # Set Environment Variables (only needed if you're passing the variable to other steps)
+#       - name: Set Environment Variables
+#         env:
+#           DBT_PROFILES_DIR: ${{ github.workspace }}/.github/dbt_profiles
+#         run: |
+#           echo "DBT_PROFILES_DIR is set to $DBT_PROFILES_DIR"
+
+#       # Install DBT
+#       - name: Install DBT
+#         run: |
+#           python -m venv dbt-env
+#           source dbt-env/bin/activate
+#           pip install --upgrade pip
+#           pip install dbt-core dbt-snowflake
+
+  
 name: DBT Workflow
 
 on:
@@ -23,6 +64,17 @@ jobs:
         with:
           python-version: 3.9
 
+      # Cache pip dependencies
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            dbt-env/
+          key: ${{ runner.os }}-dbt-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-dbt-
+
       # Set Environment Variables (only needed if you're passing the variable to other steps)
       - name: Set Environment Variables
         env:
@@ -38,10 +90,8 @@ jobs:
           pip install --upgrade pip
           pip install dbt-core dbt-snowflake
 
-      # Run DBT commands, explicitly passing the --profiles-dir option
-      - name: Run DBT Models
+      # Run DBT commands (example: dbt run)
+      - name: Run DBT
         run: |
           source dbt-env/bin/activate
-          dbt deps --profiles-dir ${{ github.workspace }}/.github/dbt_profiles
-          dbt run --profiles-dir ${{ github.workspace }}/.github/dbt_profiles
-          dbt test --profiles-dir ${{ github.workspace }}/.github/dbt_profiles
+          dbt run --profiles-dir $DBT_PROFILES_DIR
