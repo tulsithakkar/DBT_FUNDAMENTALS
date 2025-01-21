@@ -1,0 +1,47 @@
+name: DBT Workflow
+
+on:
+  push:
+    branches:
+      - main  # Adjust this to your default branch if different
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  dbt-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Set up Python environment
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9  # Match the Python version used in your local dbt project
+
+    # Install DBT
+    - name: Install DBT
+      run: |
+        python -m venv dbt-env
+        source dbt-env/bin/activate
+        pip install --upgrade pip
+        pip install dbt-core dbt-snowflake  # Adjust dbt adapter based on your project
+
+    # Run DBT commands
+    - name: Run DBT Models
+      run: |
+        source dbt-env/bin/activate
+        dbt deps  # Install dependencies
+        dbt run  # Run models
+        dbt test  # Run tests
+
+    # Upload logs as artifacts (optional)
+    - name: Upload Logs
+      uses: actions/upload-artifact@v3
+      with:
+        name: dbt-logs
+        path: logs/  # Specify the path to DBT log files if needed
