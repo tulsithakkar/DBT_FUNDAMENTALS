@@ -94,4 +94,4 @@ jobs:
       - name: Run DBT
         run: |
           source dbt-env/bin/activate
-          dbt run --profiles-dir $DBT_PROFILES_DIR
+          dbt run --profiles-dir ${{ github.workspace }}/.github/dbt_profiles
