@@ -31,10 +31,14 @@ jobs:
         pip install --upgrade pip
         pip install dbt-core dbt-snowflake  # Use your adapter (e.g., dbt-snowflake)
 
-    # Set environment variables (if needed)
+    # Set environment variables (for profiles location)
     - name: Set Environment Variables
       env:
-        DBT_PROFILES_DIR: ${{ secrets.DBT_PROFILES_DIR }}
+        DBT_PROFILES_DIR: ${{ secrets.DBT_PROFILES_DIR }}  # Path to your profiles directory
+
+    # Verify DBT_PROFILES_DIR environment variable is set (debugging)
+    - name: Debug DBT_PROFILES_DIR
+      run: echo "DBT_PROFILES_DIR is set to: $DBT_PROFILES_DIR" 
 
     # Run DBT commands
     - name: Run DBT Models
