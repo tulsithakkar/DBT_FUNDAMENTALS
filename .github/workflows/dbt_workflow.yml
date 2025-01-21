@@ -3,7 +3,7 @@ name: DBT Workflow
 on:
   push:
     branches:
-      - main  # Adjust this to your default branch
+      - main
   pull_request:
     branches:
       - main
@@ -13,40 +13,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the repository
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      # Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    # Set up Python environment
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: 3.9  # Match the Python version you use locally
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
 
-    # Install DBT and adapter
-    - name: Install DBT
-      run: |
-        python -m venv dbt-env
-        source dbt-env/bin/activate
-        pip install --upgrade pip
-        pip install dbt-core dbt-snowflake  # Use your adapter (e.g., dbt-snowflake)
+      # Set Environment Variables globally for all steps in the job
+      - name: Set Environment Variables
+        env:
+          DBT_PROFILES_DIR: ${{ github.workspace }}/.github/dbt_profiles
+        run: |
+          echo "DBT_PROFILES_DIR is set to $DBT_PROFILES_DIR"
 
-    # Set environment variables (if needed)
-    - name: Set Environment Variables
-      env:
-        DBT_PROFILES_DIR: ${{ github.workspace }}/.github/dbt_profiles  # Path to your dbt profile directory
+      # Install DBT
+      - name: Install DBT
+        run: |
+          python -m venv dbt-env
+          source dbt-env/bin/activate
+          pip install --upgrade pip
+          pip install dbt-core dbt-snowflake
 
-    # Debug: Check if the environment variable is set
-    - name: Echo DBT_PROFILES_DIR
-      run: |
-        echo "DBT_PROFILES_DIR is set to: $DBT_PROFILES_DIR"
-
-    # Run DBT commands
-    - name: Run DBT Models
-      run: |
-        source dbt-env/bin/activate
-        dbt deps  # Install dependencies
-        dbt run   # Run models
-        dbt test  # Test models
-
-
+      # Run DBT commands
+      - name: Run DBT Models
+        run: |
+          source dbt-env/bin/activate
+          echo "Running DBT commands"
+          dbt deps
+          dbt run
+          dbt test
