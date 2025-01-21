@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: 3.9
 
-      # Set Environment Variables globally for all steps in the job
+      # Set Environment Variables
       - name: Set Environment Variables
         env:
           DBT_PROFILES_DIR: ${{ github.workspace }}/.github/dbt_profiles
