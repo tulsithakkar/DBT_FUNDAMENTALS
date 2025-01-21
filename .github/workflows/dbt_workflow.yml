@@ -75,10 +75,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-dbt-
 
-      # Set Environment Variables (only needed if you're passing the variable to other steps)
+      # Set Environment Variables (ensure the DBT_PROFILES_DIR is correct)
       - name: Set Environment Variables
         env:
-          DBT_PROFILES_DIR: ${{ github.workspace }}/.github/dbt_profiles
+          DBT_PROFILES_DIR: ${{ github.workspace }}/.github/dbt_profiles  # Make sure this path is correct
         run: |
           echo "DBT_PROFILES_DIR is set to $DBT_PROFILES_DIR"
 
@@ -90,7 +90,7 @@ jobs:
           pip install --upgrade pip
           pip install dbt-core dbt-snowflake
 
-      # Run DBT commands (example: dbt run)
+      # Run DBT commands (ensure the correct profiles directory is passed)
       - name: Run DBT
         run: |
           source dbt-env/bin/activate
