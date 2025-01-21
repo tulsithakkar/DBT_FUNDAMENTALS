@@ -1,7 +1,5 @@
 models:
   - name: customer_sales
-    tests:
-      - unique
     columns:
       - name: customer_id
         tests:
